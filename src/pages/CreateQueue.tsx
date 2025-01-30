@@ -5,7 +5,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import toast from 'react-hot-toast';
 import { supabase } from '../lib/supabase';
 
-type AuthMode = 'login' | 'register';
+type AuthMode = 'login' | 'register' | 'verify';
 
 export default function CreateQueue() {
   const [authMode, setAuthMode] = useState<AuthMode>('login');
@@ -44,8 +44,9 @@ export default function CreateQueue() {
 
         if (error) throw error;
         if (user) {
-            toast.success('Registrasi berhasil! Silakan verifikasi email Anda.');
-          setIsAuthenticated(true);
+          toast.success('Registrasi berhasil! Silakan verifikasi email Anda.');
+          setAuthMode('verify');
+          setPassword(''); // Clear password after registration
         }
       } else {
         const { data: { user }, error } = await supabase.auth.signInWithPassword({
@@ -77,7 +78,6 @@ export default function CreateQueue() {
       if (userError) throw userError;
       if (!user) throw new Error('User not authenticated');
 
-      // Create queue with structure matching the migration
       const { data, error: insertError } = await supabase
         .from('queues')
         .insert([
@@ -117,6 +117,30 @@ export default function CreateQueue() {
   };
 
   const joinUrl = queueId ? `${window.location.origin}/join/${queueId}` : '';
+
+  const renderVerificationMessage = () => (
+    <div className="space-y-6 text-center">
+      <div className="bg-blue-50 p-6 rounded-lg">
+        <Mail className="w-12 h-12 text-blue-500 mx-auto mb-4" />
+        <h2 className="text-xl font-semibold mb-2">Verifikasi Email Anda</h2>
+        <p className="text-gray-600 mb-4">
+          Kami telah mengirim email verifikasi ke <strong>{email}</strong>. 
+          Silakan periksa inbox Anda dan klik link verifikasi untuk mengaktifkan akun Anda.
+        </p>
+        <p className="text-sm text-gray-500 mb-4">
+          Tidak menerima email? Periksa folder spam Anda atau hubungi support.
+        </p>
+      </div>
+      
+      <button
+        onClick={() => setAuthMode('login')}
+        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+      >
+        <LogIn className="w-5 h-5" />
+        Kembali ke Login
+      </button>
+    </div>
+  );
 
   const renderAuthForm = () => (
     <form onSubmit={handleAuth} className="space-y-6">
@@ -225,7 +249,7 @@ export default function CreateQueue() {
       <div className="flex flex-col items-center">
         <QRCodeSVG value={joinUrl} size={200} className="mb-4" />
         <p className="text-sm text-gray-600 text-center mb-4">
-        Share QR Code Ini Agar Orang-Orang Bisa Scan Dan Masuk Antrian
+          Share QR Code Ini Agar Orang-Orang Bisa Scan Dan Masuk Antrian
         </p>
       </div>
 
@@ -255,10 +279,16 @@ export default function CreateQueue() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
         <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">
-          {!isAuthenticated ? 'Authentication Required' : !queueId ? 'Buat Antrian' : 'Antrian Dibuat'}
+          {!isAuthenticated ? (
+            authMode === 'verify' ? 'Email Verification' :
+            authMode === 'login' ? 'Login' : 'Register'
+          ) : !queueId ? 'Buat Antrian' : 'Antrian Dibuat'}
         </h1>
 
-        {!isAuthenticated && renderAuthForm()}
+        {!isAuthenticated && (
+          authMode === 'verify' ? renderVerificationMessage() :
+          renderAuthForm()
+        )}
         {isAuthenticated && !queueId && renderQueueForm()}
         {queueId && renderQueueCreated()}
       </div>
