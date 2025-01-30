@@ -15,10 +15,30 @@ export default function JoinQueue() {
   const [queueId, setQueueId] = useState<string | null>(paramQueueId || null);
 
   useEffect(() => {
+    const fetchQueue = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('queues')
+          .select('*')
+          .eq('id', queueId)
+          .single();
+        
+        console.log('Queue data:', data);
+        console.log('Error:', error);
+        
+        if (error) throw error;
+        setQueueName(data.name);
+      } catch (error) {
+        console.error('Error fetching queue:', error);
+        toast.error('Queue not found');
+        navigate('/');
+      }
+    };
+    
     if (queueId) {
-      fetchQueueDetails();
+      fetchQueue();
     }
-  }, [queueId]);
+  }, [queueId, navigate]);
 
   useEffect(() => {
     if (showScanner) {
@@ -35,22 +55,6 @@ export default function JoinQueue() {
       };
     }
   }, [showScanner]);
-
-  const fetchQueueDetails = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('queues')
-        .select('name')
-        .eq('id', queueId)
-        .single();
-
-      if (error) throw error;
-      setQueueName(data.name);
-    } catch (error) {
-      toast.error('Queue not found');
-      navigate('/');
-    }
-  };
 
   const onScanSuccess = (decodedText: string) => {
     try {
