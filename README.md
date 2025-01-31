@@ -5,9 +5,13 @@
 </div>
 
 
-# 🎯 Antrian Cerdas (Smart Queue)
+# 🎯 Smart Queue
 
+<div align="center">
 
+[![documentation](https://img.shields.io/badge/Documentation-00A4EF?style=for-the-badge&logo=book&logoColor=white)](https://drive.google.com/file/d/1GBu5H575v_uqBr4ngZ9sWGamLDTu1xiP/view?usp=sharing) [![Live Preview](https://img.shields.io/badge/Live_Demo-00A4EF?style=for-the-badge&logo=web&logoColor=white)](antrian-cerdas.vercel.app)
+
+</div>
 
 A modern digital queue management system built with React and Supabase. Create and manage queues efficiently with real-time updates and QR code integration.
 
