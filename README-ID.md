@@ -115,8 +115,13 @@ cp .env.example .env
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
+5. Build Project 
 
-5. Jalankan server pengembangan:
+```bash
+npm run build
+```
+
+6. Jalankan server pengembangan:
 
 ```bash
 npm run dev
