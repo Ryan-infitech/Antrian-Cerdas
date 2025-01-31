@@ -65,6 +65,15 @@ A modern digital queue management system built with React and Supabase. Create a
 - Mobile-optimized interface
 - Push notifications (coming soon)
 
+## 🛠️ Tech Stack
+<div align="center">
+
+<img src="https://github.com/Ryan-infitech/Map-Informasi-Bencana/blob/main/readmemedia/vite+react.gif?raw=true"> 
+<img src="./readmeee/supaabase.gif">
+<img src="https://github.com/Ryan-infitech/Map-Informasi-Bencana/blob/main/readmemedia/vercel.gif?raw=true"> <img src="https://assets-v2.lottiefiles.com/a/a6a0fab2-9a75-11ef-ae6f-0fa9df9d2963/wVrVQOzKYY.gif" width="120"> <img src="https://github.com/Ryan-infitech/Map-Informasi-Bencana/blob/main/readmemedia/tailwind.gif?raw=true">
+
+
+</div>
 
 ## 🚀 Quick Start
 
@@ -112,15 +121,6 @@ Visit `http://localhost:5173` to see the app in action!
 - `queues`: Queue metadata and settings
 - `queue_entries`: Individual queue entries
 - `users`: User authentication and profiles
-
-## 🛠️ Tech Stack
-
-- **Frontend**: React + TypeScript + Vite
-- **Styling**: Tailwind CSS + Framer Motion
-- **Backend**: Supabase (PostgreSQL)
-- **Authentication**: Supabase Auth
-- **Real-time**: Supabase Realtime
-- **QR Code**: HTML5-QRCode
 
 
 ## 🤝 Contributing
