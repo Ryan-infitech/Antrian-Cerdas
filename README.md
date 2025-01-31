@@ -5,13 +5,9 @@
 </div>
 
 
-
 # 🎯 Antrian Cerdas (Smart Queue)
 
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
 
 A modern digital queue management system built with React and Supabase. Create and manage queues efficiently with real-time updates and QR code integration.
 
@@ -24,14 +20,47 @@ A modern digital queue management system built with React and Supabase. Create a
 - 🌈 **Modern UI**: Responsive design with Tailwind CSS
 - ⚡ **Performance**: Built with React and TypeScript
 
-## 🛠️ Tech Stack
+## 📸 Preview
 
-- **Frontend**: React + TypeScript + Vite
-- **Styling**: Tailwind CSS + Framer Motion
-- **Backend**: Supabase (PostgreSQL)
-- **Authentication**: Supabase Auth
-- **Real-time**: Supabase Realtime
-- **QR Code**: HTML5-QRCode
+### Create Queue Page
+![Create Queue](./readmeee/create%20queue.png)
+*Create and manage your queue with an easy-to-use interface*
+
+### Join Queue via QR
+<div align="center">
+<img src="./readmeee/join queue.png" height="720">
+</div>
+
+*Customers can quickly join queues by scanning QR codes*
+
+### Queue Management Dashboard
+![Queue Management](./readmeee/queue%20managemenet.png)
+
+*Monitor and control your queue in real-time*
+
+### Queue Status View
+![Queue Status](./readmeee/queue%20status.png)
+*Users can track their position in the queue*
+
+## 📱 Core Features
+
+### Queue Creation
+- Create custom queues with unique identifiers
+- Generate shareable QR codes
+- Set queue preferences and settings
+
+### Queue Management
+- Real-time queue monitoring
+- Call next in line
+- Mark entries as complete/skipped
+- View queue statistics
+
+### User Experience
+- Join queues via QR code scan
+- Real-time position updates
+- Mobile-optimized interface
+- Push notifications (coming soon)
+
 
 ## 🚀 Quick Start
 
@@ -72,24 +101,6 @@ npm run dev
 
 Visit `http://localhost:5173` to see the app in action!
 
-## 📱 Core Features
-
-### Queue Creation
-- Create custom queues with unique identifiers
-- Generate shareable QR codes
-- Set queue preferences and settings
-
-### Queue Management
-- Real-time queue monitoring
-- Call next in line
-- Mark entries as complete/skipped
-- View queue statistics
-
-### User Experience
-- Join queues via QR code scan
-- Real-time position updates
-- Mobile-optimized interface
-- Push notifications (coming soon)
 
 ## 🗄️ Database Schema
 
@@ -98,23 +109,15 @@ Visit `http://localhost:5173` to see the app in action!
 - `queue_entries`: Individual queue entries
 - `users`: User authentication and profiles
 
-## 📸 Screenshots
+## 🛠️ Tech Stack
 
-### Create Queue Page
-![Create Queue](./screenshots/create-queue.png)
-*Create and manage your queue with an easy-to-use interface*
+- **Frontend**: React + TypeScript + Vite
+- **Styling**: Tailwind CSS + Framer Motion
+- **Backend**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **Real-time**: Supabase Realtime
+- **QR Code**: HTML5-QRCode
 
-### Join Queue via QR
-![Join Queue](./screenshots/join-queue.png)
-*Customers can quickly join queues by scanning QR codes*
-
-### Queue Management Dashboard
-![Queue Management](./screenshots/manage-queue.png)
-*Monitor and control your queue in real-time*
-
-### Queue Status View
-![Queue Status](./screenshots/view-queue.png)
-*Users can track their position in the queue*
 
 ## 🤝 Contributing
 
