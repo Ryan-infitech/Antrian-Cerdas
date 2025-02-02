@@ -27,7 +27,7 @@ A modern digital queue management system built with React and Supabase. Create a
 ## 📸 Preview
 
 ### Create Queue Page
-<img src="./readmeee/create%20queue.png">
+<img src="https://github.com/Ryan-infitech/Antrian-Cerdas/blob/main/readmeee/create%20queue.png?raw=true">
 
 *Create and manage your queue with an easy-to-use interface*
 
@@ -39,12 +39,12 @@ A modern digital queue management system built with React and Supabase. Create a
 *Customers can quickly join queues by scanning QR codes*
 
 ### Queue Management Dashboard
-<img src="./readmeee/queue%20managemenet.png">
+<img src="https://github.com/Ryan-infitech/Antrian-Cerdas/blob/main/readmeee/queue%20managemenet.png?raw=true">
 
 *Monitor and control your queue in real-time*
 
 ### Queue Status View
-<img src="./readmeee/queue%20status.png">
+<img src="https://github.com/Ryan-infitech/Antrian-Cerdas/blob/main/readmeee/queue%20status.png?raw=true">
 
 *Users can track their position in the queue*
 
@@ -71,7 +71,8 @@ A modern digital queue management system built with React and Supabase. Create a
 <div align="center">
 
 <img src="https://github.com/Ryan-infitech/Map-Informasi-Bencana/blob/main/readmemedia/vite+react.gif?raw=true"> 
-<img src="./readmeee/supaabase.gif">
+<img src="https://github.com/Ryan-infitech/Antrian-Cerdas/blob/main/readmeee/supaabase.gif?raw=true">
+
 <img src="https://github.com/Ryan-infitech/Map-Informasi-Bencana/blob/main/readmemedia/vercel.gif?raw=true"> <img src="https://assets-v2.lottiefiles.com/a/a6a0fab2-9a75-11ef-ae6f-0fa9df9d2963/wVrVQOzKYY.gif" width="120"> <img src="https://github.com/Ryan-infitech/Map-Informasi-Bencana/blob/main/readmemedia/tailwind.gif?raw=true">
 
 
