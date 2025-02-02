@@ -8,7 +8,7 @@
 
 <div align="center">
 
-[![dokumentasi](https://img.shields.io/badge/Dokumentasi-00A4EF?style=for-the-badge&logo=book&logoColor=white)](https://drive.google.com/file/d/1GBu5H575v_uqBr4ngZ9sWGamLDTu1xiP/view?usp=sharing) [![Pratinjau Langsung](https://img.shields.io/badge/Demo_Langsung-00A4EF?style=for-the-badge&logo=web&logoColor=white)](antrian-cerdas.vercel.app)
+[![dokumentasi](https://img.shields.io/badge/Dokumentasi-00A4EF?style=for-the-badge&logo=book&logoColor=white)](https://drive.google.com/file/d/1GBu5H575v_uqBr4ngZ9sWGamLDTu1xiP/view?usp=sharing) [![Pratinjau Langsung](https://img.shields.io/badge/Demo_Langsung-00A4EF?style=for-the-badge&logo=web&logoColor=white)](https://antrian-two.vercel.app/)
 
 </div>
 
@@ -27,7 +27,8 @@ Sistem manajemen antrian digital modern yang dibangun dengan React dan Supabase.
 
 ### Halaman Buat Antrian
 
-![Buat Antrian](./readmeee/create%20queue.png)
+<img src="https://github.com/Ryan-infitech/Antrian-Cerdas/blob/main/readmeee/create%20queue.png?raw=true">
+
 _Buat dan kelola antrian Anda dengan antarmuka yang mudah digunakan_
 
 ### Bergabung dengan Antrian via QR
@@ -40,12 +41,14 @@ _Pelanggan dapat dengan cepat bergabung dengan antrian dengan memindai kode QR_
 
 ### Dashboard Manajemen Antrian
 
-![Manajemen Antrian](./readmeee/queue%20managemenet.png)
+<img src="https://github.com/Ryan-infitech/Antrian-Cerdas/blob/main/readmeee/queue%20managemenet.png?raw=true">
+
 _Pantau dan kendalikan antrian Anda secara real-time_
 
 ### Tampilan Status Antrian
 
-![Status Antrian](./readmeee/queue%20status.png)
+<img src="https://github.com/Ryan-infitech/Antrian-Cerdas/blob/main/readmeee/queue%20status.png?raw=true">
+
 _Pengguna dapat melacak posisi mereka dalam antrian_
 
 ## 📱 Fitur Utama
@@ -75,7 +78,8 @@ _Pengguna dapat melacak posisi mereka dalam antrian_
 <div align="center">
 
 <img src="https://github.com/Ryan-infitech/Map-Informasi-Bencana/blob/main/readmemedia/vite+react.gif?raw=true"> 
-<img src="./readmeee/supaabase.gif">
+<img src="https://github.com/Ryan-infitech/Antrian-Cerdas/blob/main/readmeee/supaabase.gif?raw=true">
+
 <img src="https://github.com/Ryan-infitech/Map-Informasi-Bencana/blob/main/readmemedia/vercel.gif?raw=true"> <img src="https://assets-v2.lottiefiles.com/a/a6a0fab2-9a75-11ef-ae6f-0fa9df9d2963/wVrVQOzKYY.gif" width="120"> <img src="https://github.com/Ryan-infitech/Map-Informasi-Bencana/blob/main/readmemedia/tailwind.gif?raw=true">
 
 </div>
