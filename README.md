@@ -9,7 +9,7 @@
 
 <div align="center">
 
-[![documentation](https://img.shields.io/badge/Documentation-00A4EF?style=for-the-badge&logo=book&logoColor=white)](https://drive.google.com/file/d/1GBu5H575v_uqBr4ngZ9sWGamLDTu1xiP/view?usp=sharing) [![Live Preview](https://img.shields.io/badge/Live_Demo-00A4EF?style=for-the-badge&logo=web&logoColor=white)](antrian-cerdas.vercel.app)
+[![documentation](https://img.shields.io/badge/Documentation-00A4EF?style=for-the-badge&logo=book&logoColor=white)](https://drive.google.com/file/d/1GBu5H575v_uqBr4ngZ9sWGamLDTu1xiP/view?usp=sharing) [![Live Preview](https://img.shields.io/badge/Live_Demo-00A4EF?style=for-the-badge&logo=web&logoColor=white)](https://antrian-two.vercel.app/)
 
 </div>
 
@@ -27,7 +27,8 @@ A modern digital queue management system built with React and Supabase. Create a
 ## 📸 Preview
 
 ### Create Queue Page
-![Create Queue](./readmeee/create%20queue.png)
+<img src="./readmeee/create%20queue.png">
+
 *Create and manage your queue with an easy-to-use interface*
 
 ### Join Queue via QR
@@ -38,12 +39,13 @@ A modern digital queue management system built with React and Supabase. Create a
 *Customers can quickly join queues by scanning QR codes*
 
 ### Queue Management Dashboard
-![Queue Management](./readmeee/queue%20managemenet.png)
+<img src="./readmeee/queue%20managemenet.png">
 
 *Monitor and control your queue in real-time*
 
 ### Queue Status View
-![Queue Status](./readmeee/queue%20status.png)
+<img src="./readmeee/queue%20status.png">
+
 *Users can track their position in the queue*
 
 ## 📱 Core Features
