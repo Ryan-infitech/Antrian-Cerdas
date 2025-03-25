@@ -32,6 +32,7 @@
 
   .pixel-card:hover {
     box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.4);
+    transform: translateY(-6px);
   }
 
   .pixel-icon {
@@ -62,9 +63,100 @@
     image-rendering: pixelated;
   }
 
+  .pixel-circle {
+    clip-path: circle(50% at 50% 50%);
+    image-rendering: pixelated;
+  }
+
+  .pixel-triangle {
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    image-rendering: pixelated;
+  }
+
+  .pixel-star {
+    clip-path: polygon(
+      50% 0%,
+      61% 35%,
+      98% 35%,
+      68% 57%,
+      79% 91%,
+      50% 70%,
+      21% 91%,
+      32% 57%,
+      2% 35%,
+      39% 35%
+    );
+    image-rendering: pixelated;
+  }
+
   .pixel-badge {
     border: 2px solid white;
     background-color: rgba(0, 0, 0, 0.2);
     box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  .pixel-bounce {
+    animation: pixel-bounce 2s infinite;
+  }
+
+  .pixel-btn {
+    padding: 0.5rem 1.5rem;
+    background-color: #000;
+    color: white;
+    font-family: "Press Start 2P", cursive;
+    font-size: 0.8rem;
+    border: 2px solid #000;
+    transition: all 0.1s ease;
+    position: relative;
+  }
+
+  .pixel-btn:after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: -1;
+  }
+
+  .pixel-btn:hover {
+    transform: translate(-2px, -2px);
+  }
+
+  .pixel-glow {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  @keyframes pixel-bounce {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes pixel-glitch {
+    0%,
+    100% {
+      transform: translate(0);
+    }
+    20% {
+      transform: translate(-2px, 2px);
+    }
+    40% {
+      transform: translate(2px, -2px);
+    }
+    60% {
+      transform: translate(-1px, -1px);
+    }
+    80% {
+      transform: translate(1px, 1px);
+    }
   }
 }
