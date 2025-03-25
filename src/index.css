@@ -191,3 +191,33 @@
     }
   }
 }
+
+/* Fixed QR Scanner Styling */
+#qr-reader {
+  width: 100% !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+#qr-reader video {
+  width: 100% !important;
+  height: auto !important;
+  object-fit: cover;
+}
+
+#qr-reader__dashboard {
+  padding: 0 !important;
+}
+
+#qr-reader__scan_region {
+  min-height: 250px;
+  position: relative;
+}
+
+#qr-reader__scan_region img {
+  display: none !important;
+}
+
+.qr-container {
+  position: relative;
+}
