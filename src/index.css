@@ -1,3 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .pixel-grid {
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0.1) 1px,
+        transparent 1px
+      ),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .pixel-dots {
+    background-image: radial-gradient(
+      rgba(255, 255, 255, 0.2) 1px,
+      transparent 1px
+    );
+    background-size: 16px 16px;
+  }
+
+  .pixel-card {
+    border: 4px solid #000;
+    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
+    image-rendering: pixelated;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+
+  .pixel-card:hover {
+    box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.4);
+  }
+
+  .pixel-icon {
+    border: 3px solid #000;
+    image-rendering: pixelated;
+    transition: all 0.2s ease;
+  }
+
+  .pixel-shadow {
+    text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.7);
+  }
+
+  .pixel-box {
+    clip-path: polygon(
+      0% 0%,
+      100% 0%,
+      100% 25%,
+      75% 25%,
+      75% 75%,
+      100% 75%,
+      100% 100%,
+      0% 100%,
+      0% 75%,
+      25% 75%,
+      25% 25%,
+      0% 25%
+    );
+    image-rendering: pixelated;
+  }
+
+  .pixel-badge {
+    border: 2px solid white;
+    background-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+  }
+}
