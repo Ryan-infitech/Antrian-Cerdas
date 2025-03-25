@@ -192,32 +192,126 @@
   }
 }
 
-/* Fixed QR Scanner Styling */
+/* Fixed QR Scanner Styling - Legacy and Modern Compatibility */
 #qr-reader {
   width: 100% !important;
   border: none !important;
   padding: 0 !important;
+  min-height: 300px !important;
+  background-color: #f9fafb;
 }
 
 #qr-reader video {
   width: 100% !important;
   height: auto !important;
-  object-fit: cover;
+  min-height: 300px !important;
+  object-fit: cover !important;
 }
 
 #qr-reader__dashboard {
-  padding: 0 !important;
+  padding: 5px !important;
+  background: #f9fafb !important;
+  border: none !important;
 }
 
 #qr-reader__scan_region {
-  min-height: 250px;
-  position: relative;
+  min-height: 250px !important;
+  background: #f9fafb !important;
+  position: relative !important;
 }
 
 #qr-reader__scan_region img {
   display: none !important;
 }
 
+#qr-reader__status_span {
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: white !important;
+  padding: 5px 10px !important;
+  border-radius: 4px !important;
+}
+
+#qr-reader__dashboard_section_csr button {
+  background: #3b82f6 !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  margin: 5px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+}
+
 .qr-container {
   position: relative;
+  min-height: 300px;
+}
+
+/* Make sure select and buttons are visible */
+select {
+  padding: 5px !important;
+  margin: 5px !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 4px !important;
+  background: white !important;
+}
+
+/* QR Scanner Specific Styles - Simplified for better compatibility */
+#qr-scanner-container {
+  width: 100% !important;
+  min-height: 300px !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+#qr-scanner-container video {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 250px !important;
+  object-fit: cover !important;
+  border-radius: 0.25rem !important;
+}
+
+#qr-scanner-container__dashboard {
+  padding: 0.5rem !important;
+  background: transparent !important;
+}
+
+#qr-scanner-container__dashboard_section_csr button {
+  background: #3b82f6 !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.5rem 0.75rem !important;
+  margin: 0.25rem !important;
+  border-radius: 0.25rem !important;
+  cursor: pointer !important;
+  font-size: 0.875rem !important;
+}
+
+#qr-scanner-container__scan_region {
+  min-height: 200px !important;
+  background: transparent !important;
+}
+
+#qr-scanner-container__scan_region img {
+  display: none !important;
+}
+
+/* Make sure header is more visible */
+#qr-scanner-container__header_message {
+  background: rgba(0, 0, 0, 0.7) !important;
+  color: white !important;
+  padding: 0.5rem !important;
+  border-radius: 0.25rem !important;
+  font-size: 0.875rem !important;
+}
+
+/* Correctly style select dropdown */
+#qr-scanner-container select {
+  padding: 0.375rem 0.75rem !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.25rem !important;
+  background: white !important;
+  margin: 0.25rem !important;
+  font-size: 0.875rem !important;
 }

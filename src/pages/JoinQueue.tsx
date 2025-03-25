@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Loader2,
-  Camera,
   QrCode,
   AlertTriangle,
-  RefreshCw,
+  ArrowLeft,
+  Camera,
 } from "lucide-react";
-import { Html5Qrcode } from "html5-qrcode";
+import { Html5QrcodeScanner } from "html5-qrcode";
 import toast from "react-hot-toast";
 import { supabase } from "../lib/supabase";
+import FallbackCameraScanner from "../components/FallbackCameraScanner";
 
 export default function JoinQueue() {
   const { queueId: paramQueueId } = useParams();
@@ -20,12 +21,14 @@ export default function JoinQueue() {
   const [showScanner, setShowScanner] = useState(!paramQueueId);
   const [queueId, setQueueId] = useState<string | null>(paramQueueId || null);
   const [scannerError, setScannerError] = useState<string | null>(null);
-  const [scannerStatus, setScannerStatus] = useState("initializing");
-  const [cameras, setCameras] = useState<{ id: string; label: string }[]>([]);
-  const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
+  const [scannerStatus, setScannerStatus] = useState<
+    "requesting" | "granted" | "denied" | "initializing" | "active" | "error"
+  >("requesting");
 
-  const qrCodeRef = useRef<Html5Qrcode | null>(null);
+  const scannerContainerRef = useRef<HTMLDivElement>(null);
+  const scannerRef = useRef<Html5QrcodeScanner | null>(null);
 
+  // Fetch queue details when queueId changes
   useEffect(() => {
     const fetchQueue = async () => {
       try {
@@ -34,9 +37,6 @@ export default function JoinQueue() {
           .select("*")
           .eq("id", queueId)
           .single();
-
-        console.log("Queue data:", data);
-        console.log("Error:", error);
 
         if (error) throw error;
         setQueueName(data.name);
@@ -52,99 +52,117 @@ export default function JoinQueue() {
     }
   }, [queueId, navigate]);
 
-  // Get available cameras on component mount
+  // First, explicitly request camera permissions
   useEffect(() => {
     if (showScanner) {
-      Html5Qrcode.getCameras()
-        .then((devices) => {
-          if (devices && devices.length) {
-            setCameras(devices);
-            setSelectedCamera(devices[0].id);
-          } else {
-            setScannerError("No cameras found on your device");
-          }
+      setScannerStatus("requesting");
+      setScannerError(null);
+
+      // Clean up any existing scanner
+      if (scannerRef.current) {
+        try {
+          scannerRef.current.clear().catch(console.error);
+          scannerRef.current = null;
+        } catch (err) {
+          console.error("Error cleaning up scanner:", err);
+        }
+      }
+
+      // First check if navigator.mediaDevices is available
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        console.error("mediaDevices API not supported");
+        setScannerStatus("error");
+        setScannerError(
+          "Your browser doesn't support camera access. Try using Chrome, Firefox, or Safari."
+        );
+        return;
+      }
+
+      // Directly request camera permission
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          console.log("Camera permission granted");
+          setScannerStatus("granted");
+
+          // Stop the stream right away - we just needed the permission
+          stream.getTracks().forEach((track) => track.stop());
+
+          // Now that we have permissions, initialize the QR scanner with a delay
+          setTimeout(initializeScanner, 500);
         })
         .catch((err) => {
-          console.error("Error getting cameras", err);
-          setScannerError(`Could not access cameras: ${err.message}`);
+          console.error("Camera permission error:", err);
+          setScannerStatus("denied");
+          setScannerError(
+            err.name === "NotAllowedError" ||
+              err.name === "PermissionDeniedError"
+              ? "Camera access denied. Please allow camera access and try again."
+              : `Camera error: ${err.message || "Unable to access camera"}`
+          );
         });
     }
   }, [showScanner]);
 
-  // Initialize scanner when camera is selected
-  useEffect(() => {
-    // Cleanup previous scanner instance
-    if (qrCodeRef.current) {
-      qrCodeRef.current.stop().catch(console.error);
-      qrCodeRef.current = null;
-    }
+  const initializeScanner = () => {
+    if (!scannerContainerRef.current) return;
 
-    if (showScanner && selectedCamera) {
+    try {
       setScannerStatus("initializing");
-      setScannerError(null);
+      console.log("Initializing QR scanner...");
 
-      try {
-        // Clear the element first
-        const element = document.getElementById("qr-reader");
-        if (element) {
-          element.innerHTML = "";
-        }
+      // Make sure the container is empty
+      scannerContainerRef.current.innerHTML = "";
 
-        // Create new scanner instance
-        qrCodeRef.current = new Html5Qrcode("qr-reader");
-
-        // Configure scanner with specific settings for better visibility
-        const config = {
+      // Create scanner with simple configuration
+      const scanner = new Html5QrcodeScanner(
+        "qr-scanner-container",
+        {
           fps: 10,
-          qrbox: { width: 250, height: 250 },
+          qrbox: 250,
+          disableFlip: false,
           aspectRatio: 1.0,
           showTorchButtonIfSupported: true,
           showZoomSliderIfSupported: true,
-        };
+          verbose: false, // Set to true for debugging
+        },
+        false // Don't start scanning right away
+      );
 
-        // Start scanning
-        qrCodeRef.current
-          .start(
-            selectedCamera,
-            config,
+      scannerRef.current = scanner;
+
+      // Set a timeout to ensure DOM is ready before rendering
+      setTimeout(() => {
+        try {
+          scanner.render(
             (decodedText) => {
-              console.log("QR Code detected:", decodedText);
-              handleQrCodeResult(decodedText);
+              handleScanSuccess(decodedText);
             },
             (errorMessage) => {
-              // This is for transient errors during scanning
-              console.log("QR scan error:", errorMessage);
+              // This callback is for fatal render errors only
+              console.error("Scanner render error:", errorMessage);
             }
-          )
-          .then(() => {
-            console.log("QR Code scanner started successfully");
+          );
+
+          // Set status to active after a short delay to ensure UI is updated
+          setTimeout(() => {
             setScannerStatus("active");
-          })
-          .catch((err) => {
-            console.error("Failed to start scanner:", err);
-            setScannerStatus("failed");
-            setScannerError(
-              `Camera access failed: ${err.message || "Unknown error"}`
-            );
-            toast.error("Failed to access camera");
-          });
-      } catch (err: any) {
-        console.error("Error setting up scanner:", err);
-        setScannerStatus("failed");
-        setScannerError(`Scanner error: ${err.message}`);
-      }
+            console.log("Scanner is now active");
+          }, 1000);
+        } catch (err) {
+          console.error("Error rendering scanner:", err);
+          setScannerStatus("error");
+          setScannerError(`Scanner initialization failed: ${err}`);
+        }
+      }, 300);
+    } catch (err) {
+      console.error("Error creating scanner:", err);
+      setScannerStatus("error");
+      setScannerError(`Failed to create scanner: ${err}`);
     }
+  };
 
-    // Cleanup function
-    return () => {
-      if (qrCodeRef.current) {
-        qrCodeRef.current.stop().catch(console.error);
-        qrCodeRef.current = null;
-      }
-    };
-  }, [selectedCamera, showScanner]);
-
-  const handleQrCodeResult = (decodedText: string) => {
+  const handleScanSuccess = (decodedText: string) => {
     try {
       console.log("Processing QR code:", decodedText);
 
@@ -154,7 +172,7 @@ export default function JoinQueue() {
           /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
         )
       ) {
-        console.log("Valid UUID found in QR code");
+        console.log("Valid UUID found");
         setQueueId(decodedText);
         setShowScanner(false);
         return;
@@ -177,14 +195,59 @@ export default function JoinQueue() {
           setQueueId(scannedQueueId);
           setShowScanner(false);
         } else {
-          throw new Error("Invalid queue ID format");
+          throw new Error("Invalid QR code format");
         }
       } catch (error) {
-        throw new Error("Could not parse QR code as valid URL");
+        throw new Error("Could not parse QR code as URL");
       }
     } catch (error: any) {
       toast.error(error.message || "Invalid QR code");
     }
+  };
+
+  // Access browser settings to enable camera
+  const openCameraSettings = () => {
+    try {
+      if (navigator.mediaDevices.getUserMedia) {
+        toast.success("Opening camera permissions dialog");
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then((stream) => {
+            // If successful, stop the stream and retry the scanner
+            stream.getTracks().forEach((track) => track.stop());
+            retryScanner();
+          })
+          .catch((err) => {
+            console.error("Error requesting camera again:", err);
+            toast.error(
+              "Could not access camera. Please check browser settings."
+            );
+          });
+      }
+    } catch (err) {
+      console.error("Error opening camera settings:", err);
+      toast.error("Failed to open camera settings");
+    }
+  };
+
+  const retryScanner = () => {
+    // Clean up existing scanner
+    if (scannerRef.current) {
+      try {
+        scannerRef.current.clear().catch(console.error);
+        scannerRef.current = null;
+      } catch (err) {
+        console.error("Error cleaning up scanner:", err);
+      }
+    }
+
+    // Reset state and restart scanner
+    setScannerError(null);
+    setScannerStatus("requesting");
+
+    // Force permission request again by setting showScanner false then true
+    setShowScanner(false);
+    setTimeout(() => setShowScanner(true), 300);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -235,87 +298,81 @@ export default function JoinQueue() {
     }
   };
 
-  const switchCamera = () => {
-    if (cameras.length <= 1) return;
-
-    const currentIndex = cameras.findIndex((cam) => cam.id === selectedCamera);
-    const nextIndex = (currentIndex + 1) % cameras.length;
-    setSelectedCamera(cameras[nextIndex].id);
-  };
-
-  const retryScanner = () => {
-    setScannerError(null);
-    setScannerStatus("initializing");
-
-    // Clean up existing scanner
-    if (qrCodeRef.current) {
-      qrCodeRef.current.stop().catch(console.error);
-      qrCodeRef.current = null;
-    }
-
-    // Force remount by toggling state
-    setShowScanner(false);
-    setTimeout(() => setShowScanner(true), 100);
-  };
-
   const renderScannerContent = () => {
-    if (scannerStatus === "failed") {
-      return (
-        <div className="text-center p-6">
-          <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <p className="text-red-600 mb-4 font-medium">{scannerError}</p>
-          <button
-            onClick={retryScanner}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+    switch (scannerStatus) {
+      case "requesting":
+      case "initializing":
+        return (
+          <div
+            className="flex flex-col items-center justify-center p-6"
+            style={{ minHeight: "300px" }}
           >
-            Try Again
-          </button>
-        </div>
-      );
-    }
+            <Loader2 className="w-12 h-12 text-blue-600 animate-spin mb-4" />
+            <p>Requesting camera access...</p>
+            <p className="text-sm text-gray-500 mt-2">
+              Please allow camera access when prompted
+            </p>
+          </div>
+        );
 
-    if (scannerStatus === "initializing") {
-      return (
-        <div
-          className="flex flex-col items-center justify-center p-6"
-          style={{ minHeight: "300px" }}
-        >
-          <Loader2 className="w-12 h-12 text-blue-600 animate-spin mb-4" />
-          <p>Accessing camera...</p>
-          <p className="text-sm text-gray-500 mt-2">
-            Please allow camera permissions if prompted
-          </p>
-        </div>
-      );
-    }
+      case "denied":
+        return (
+          <div className="text-center p-6">
+            <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+            <p className="text-red-600 mb-4">
+              Camera access was denied. Please enable camera permissions to scan
+              QR codes.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-3">
+              <button
+                onClick={openCameraSettings}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              >
+                Request Camera Access
+              </button>
+              <button
+                onClick={() => navigate("/")}
+                className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 mt-2 sm:mt-0"
+              >
+                Back to Home
+              </button>
+            </div>
+          </div>
+        );
 
-    return (
-      <div className="qr-container">
-        {/* The scanner will be mounted here */}
-        <div
-          id="qr-reader"
-          style={{
-            width: "100%",
-            minHeight: "300px",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        ></div>
-
-        {/* Camera switcher shown only when multiple cameras are available */}
-        {cameras.length > 1 && (
-          <div className="absolute top-2 right-2 z-10">
+      case "error":
+        return (
+          <div className="text-center p-6">
+            <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+            <p className="text-red-600 mb-4">{scannerError}</p>
             <button
-              onClick={switchCamera}
-              className="bg-gray-800 bg-opacity-70 text-white p-2 rounded-full"
-              title="Switch Camera"
+              onClick={retryScanner}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
             >
-              <RefreshCw className="w-5 h-5" />
+              Try Again
             </button>
           </div>
-        )}
-      </div>
-    );
+        );
+
+      case "granted":
+      case "active":
+        return (
+          <div ref={scannerContainerRef} className="qr-container relative">
+            <div
+              id="qr-scanner-container"
+              style={{ width: "100%", minHeight: "300px" }}
+            ></div>
+            {scannerStatus === "granted" && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white">
+                <Loader2 className="w-8 h-8 animate-spin" />
+              </div>
+            )}
+          </div>
+        );
+
+      default:
+        return <div>Something went wrong</div>;
+    }
   };
 
   if (showScanner) {
@@ -336,13 +393,25 @@ export default function JoinQueue() {
             {renderScannerContent()}
           </div>
 
-          <div className="mt-6 flex justify-center">
+          <div className="mt-6 flex justify-center flex-col items-center">
             <button
               onClick={() => navigate("/")}
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:underline flex items-center gap-1"
             >
-              Back to Home
+              <ArrowLeft className="w-4 h-4" /> Back to Home
             </button>
+
+            {(scannerStatus === "denied" || scannerStatus === "error") && (
+              <FallbackCameraScanner
+                onCodeEntered={(code) => handleScanSuccess(code)}
+              />
+            )}
+          </div>
+
+          {/* Add diagnostic information for debugging */}
+          <div className="mt-4 text-xs text-gray-400 text-center">
+            Scanner status: {scannerStatus}
+            {scannerError && <div>Error: {scannerError}</div>}
           </div>
         </div>
       </div>
