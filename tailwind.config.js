@@ -15,6 +15,7 @@ export default {
         "pixel-rotate": "pixel-rotate 8s linear infinite",
         "spin-slow": "spin 6s linear infinite",
         "bounce-slow": "bounce 6s infinite",
+        ping: "ping 2s cubic-bezier(0, 0, 0.2, 1) infinite",
       },
       keyframes: {
         pulse: {
@@ -45,6 +46,11 @@ export default {
           "0%, 100%": { transform: "translateX(0)" },
           "50%": { transform: "translateX(-15px)" },
         },
+      },
+      transitionDelay: {
+        150: "150ms",
+        450: "450ms",
+        700: "700ms",
       },
     },
   },
