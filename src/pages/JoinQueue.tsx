@@ -27,6 +27,7 @@ export default function JoinQueue() {
 
   const scannerContainerRef = useRef<HTMLDivElement>(null);
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+  const scannerInitializedRef = useRef(false); // Track if scanner was initialized
 
   // Fetch queue details when queueId changes
   useEffect(() => {
@@ -52,23 +53,77 @@ export default function JoinQueue() {
     }
   }, [queueId, navigate]);
 
+  // Improved cleanup function to be more robust and avoid DOM manipulation errors
+  const safeCleanupScanner = () => {
+    try {
+      // First, mark scanner as not initialized
+      scannerInitializedRef.current = false;
+
+      // Clear scanner using its API, which should handle DOM cleanup properly
+      if (scannerRef.current) {
+        try {
+          // Use promise-based clear with proper error handling
+          scannerRef.current
+            .clear()
+            .then(() => {
+              console.log("Scanner cleared successfully");
+
+              // Only after successful clear by the scanner itself, clear our references
+              scannerRef.current = null;
+
+              // Now it's safer to clean up any remaining elements
+              setTimeout(() => {
+                if (scannerContainerRef.current) {
+                  // Safely check if the element still has children before clearing
+                  while (scannerContainerRef.current.firstChild) {
+                    scannerContainerRef.current.removeChild(
+                      scannerContainerRef.current.firstChild
+                    );
+                  }
+                }
+              }, 100);
+            })
+            .catch((err) => {
+              console.warn("Non-critical error during scanner clear:", err);
+              scannerRef.current = null; // Still clear our reference
+            });
+        } catch (err) {
+          console.warn("Error during scanner cleanup:", err);
+          scannerRef.current = null;
+        }
+      } else {
+        // If scanner ref doesn't exist but container does, clean it carefully
+        if (scannerContainerRef.current) {
+          setTimeout(() => {
+            try {
+              // Empty the container safely if it exists and has children
+              if (
+                scannerContainerRef.current &&
+                scannerContainerRef.current.firstChild
+              ) {
+                scannerContainerRef.current.innerHTML = "";
+              }
+            } catch (err) {
+              console.warn("Error clearing scanner container:", err);
+            }
+          }, 100);
+        }
+      }
+    } catch (err) {
+      console.error("Critical error during scanner cleanup:", err);
+    }
+  };
+
   // First, explicitly request camera permissions
   useEffect(() => {
     if (showScanner) {
       setScannerStatus("requesting");
       setScannerError(null);
 
-      // Clean up any existing scanner
-      if (scannerRef.current) {
-        try {
-          scannerRef.current.clear().catch(console.error);
-          scannerRef.current = null;
-        } catch (err) {
-          console.error("Error cleaning up scanner:", err);
-        }
-      }
+      // Ensure clean state before starting
+      safeCleanupScanner();
 
-      // First check if navigator.mediaDevices is available
+      // Check if mediaDevices API is available
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         console.error("mediaDevices API not supported");
         setScannerStatus("error");
@@ -78,17 +133,17 @@ export default function JoinQueue() {
         return;
       }
 
-      // Directly request camera permission
+      // Request camera permission
       navigator.mediaDevices
         .getUserMedia({ video: true })
         .then((stream) => {
           console.log("Camera permission granted");
           setScannerStatus("granted");
 
-          // Stop the stream right away - we just needed the permission
+          // Stop the stream - we just needed permission
           stream.getTracks().forEach((track) => track.stop());
 
-          // Now that we have permissions, initialize the QR scanner with a delay
+          // Initialize scanner after a short delay
           setTimeout(initializeScanner, 500);
         })
         .catch((err) => {
@@ -102,63 +157,113 @@ export default function JoinQueue() {
           );
         });
     }
+
+    // Cleanup when component unmounts or showScanner changes
+    return safeCleanupScanner;
   }, [showScanner]);
 
+  // Update the initializeScanner function to be more careful with DOM elements
   const initializeScanner = () => {
-    if (!scannerContainerRef.current) return;
+    if (!scannerContainerRef.current) {
+      setScannerError("Scanner container not found");
+      setScannerStatus("error");
+      return;
+    }
 
     try {
-      setScannerStatus("initializing");
-      console.log("Initializing QR scanner...");
+      // Cleanup first to ensure a clean start
+      safeCleanupScanner();
 
-      // Make sure the container is empty
-      scannerContainerRef.current.innerHTML = "";
-
-      // Create scanner with simple configuration
-      const scanner = new Html5QrcodeScanner(
-        "qr-scanner-container",
-        {
-          fps: 10,
-          qrbox: 250,
-          disableFlip: false,
-          aspectRatio: 1.0,
-          showTorchButtonIfSupported: true,
-          showZoomSliderIfSupported: true,
-          verbose: false, // Set to true for debugging
-        },
-        false // Don't start scanning right away
-      );
-
-      scannerRef.current = scanner;
-
-      // Set a timeout to ensure DOM is ready before rendering
+      // Wait a moment to ensure cleanup is complete before creating new elements
       setTimeout(() => {
-        try {
-          scanner.render(
-            (decodedText) => {
-              handleScanSuccess(decodedText);
-            },
-            (errorMessage) => {
-              // This callback is for fatal render errors only
-              console.error("Scanner render error:", errorMessage);
+        // Ensure we have a fresh container for the scanner
+        if (scannerContainerRef.current) {
+          // Clear the container first
+          try {
+            while (scannerContainerRef.current.firstChild) {
+              scannerContainerRef.current.removeChild(
+                scannerContainerRef.current.firstChild
+              );
             }
+          } catch (err) {
+            console.warn(
+              "Error clearing container, trying innerHTML as fallback",
+              err
+            );
+            scannerContainerRef.current.innerHTML = "";
+          }
+
+          // Create a fresh container element
+          const freshContainer = document.createElement("div");
+          freshContainer.id = "qr-scanner-container";
+          freshContainer.style.width = "100%";
+          freshContainer.style.minHeight = "300px";
+
+          // Append the fresh container
+          scannerContainerRef.current.appendChild(freshContainer);
+
+          setScannerStatus("initializing");
+          console.log("Initializing new QR scanner...");
+
+          // Create scanner with minimal config and more time to initialize
+          const scanner = new Html5QrcodeScanner(
+            "qr-scanner-container",
+            {
+              fps: 10,
+              qrbox: 250,
+              rememberLastUsedCamera: false,
+              aspectRatio: 1.0,
+            },
+            false
           );
 
-          // Set status to active after a short delay to ensure UI is updated
+          scannerRef.current = scanner;
+
+          // Use a longer timeout for render to ensure DOM is fully prepared
           setTimeout(() => {
-            setScannerStatus("active");
-            console.log("Scanner is now active");
-          }, 1000);
-        } catch (err) {
-          console.error("Error rendering scanner:", err);
-          setScannerStatus("error");
-          setScannerError(`Scanner initialization failed: ${err}`);
+            if (!scannerRef.current || !scannerContainerRef.current) return;
+
+            try {
+              scanner.render(
+                (decodedText) => {
+                  console.log("Scan successful, beginning cleanup");
+                  // Store the result first
+                  const result = decodedText;
+
+                  // Use setTimeout to allow the scanner to complete its internal processes
+                  setTimeout(() => {
+                    safeCleanupScanner();
+                    // Process the scan result after cleanup
+                    handleScanSuccess(result);
+                  }, 300);
+                },
+                (errorMessage) => {
+                  console.error("Critical scanner error:", errorMessage);
+                }
+              );
+
+              scannerInitializedRef.current = true;
+              setTimeout(() => {
+                if (scannerInitializedRef.current) {
+                  setScannerStatus("active");
+                }
+              }, 1000);
+            } catch (err) {
+              console.error("Error rendering scanner:", err);
+              setScannerStatus("error");
+              setScannerError(
+                `Scanner initialization failed: ${err.message || String(err)}`
+              );
+            }
+          }, 500);
         }
-      }, 300);
+      }, 300); // Wait for cleanup to complete
     } catch (err) {
       console.error("Error creating scanner:", err);
       setScannerStatus("error");
-      setScannerError(`Failed to create scanner: ${err}`);
+      setScannerError(
+        `Failed to create scanner: ${err.message || String(err)}`
+      );
     }
   };
 
@@ -231,23 +336,14 @@ export default function JoinQueue() {
   };
 
   const retryScanner = () => {
-    // Clean up existing scanner
-    if (scannerRef.current) {
-      try {
-        scannerRef.current.clear().catch(console.error);
-        scannerRef.current = null;
-      } catch (err) {
-        console.error("Error cleaning up scanner:", err);
-      }
-    }
-
-    // Reset state and restart scanner
+    // Clean up and retry
+    safeCleanupScanner();
     setScannerError(null);
     setScannerStatus("requesting");
 
-    // Force permission request again by setting showScanner false then true
+    // Force re-render by toggling state
     setShowScanner(false);
-    setTimeout(() => setShowScanner(true), 300);
+    setTimeout(() => setShowScanner(true), 500); // Longer delay for safety
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -395,7 +491,11 @@ export default function JoinQueue() {
 
           <div className="mt-6 flex justify-center flex-col items-center">
             <button
-              onClick={() => navigate("/")}
+              onClick={() => {
+                // Ensure scanner is cleaned up before navigating
+                safeCleanupScanner();
+                navigate("/");
+              }}
               className="text-blue-600 hover:underline flex items-center gap-1"
             >
               <ArrowLeft className="w-4 h-4" /> Back to Home
