@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import {
   Clock,
@@ -36,6 +36,8 @@ export default function ViewQueue() {
   );
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
+  // Add ref to track latest entry without causing re-renders
+  const myEntryIdRef = useRef<string | null>(entryId);
 
   useEffect(() => {
     const fetchQueueDetails = async () => {
@@ -60,13 +62,13 @@ export default function ViewQueue() {
         if (entriesError) throw entriesError;
         setEntries(entries || []);
 
-        if (entryId) {
-          const myEntry =
-            entries?.find((entry) => entry.id === entryId) || null;
-          setMyEntry(myEntry);
+        if (myEntryIdRef.current) {
+          const myEntryData =
+            entries?.find((entry) => entry.id === myEntryIdRef.current) || null;
+          setMyEntry(myEntryData);
 
-          if (myEntry && myEntry.status === "waiting") {
-            const position = getPositionInQueue(myEntry, entries);
+          if (myEntryData && myEntryData.status === "waiting") {
+            const position = getPositionInQueue(myEntryData, entries);
             const estimatedMinutes = position * 3;
             setEstimatedWaitTime(estimatedMinutes);
           } else {
@@ -83,6 +85,7 @@ export default function ViewQueue() {
 
     fetchQueueDetails();
 
+    // Set up subscription once and avoid recreating it
     const entriesSubscription = supabase
       .channel("user-queue-entries")
       .on(
@@ -97,6 +100,7 @@ export default function ViewQueue() {
           console.log("New queue entry added:", payload);
           fetchQueueDetails();
 
+          // Check if myEntry exists before accessing its properties
           if (myEntry && myEntry.status === "waiting") {
             toast.info("New customer joined the queue");
           }
@@ -113,7 +117,11 @@ export default function ViewQueue() {
         (payload: any) => {
           console.log("Queue entry updated:", payload);
 
-          if (entryId && payload.new && payload.new.id === entryId) {
+          if (
+            myEntryIdRef.current &&
+            payload.new &&
+            payload.new.id === myEntryIdRef.current
+          ) {
             const oldStatus = payload.old?.status;
             const newStatus = payload.new.status;
 
@@ -184,7 +192,7 @@ export default function ViewQueue() {
       entriesSubscription.unsubscribe();
       queueSubscription.unsubscribe();
     };
-  }, [queueId, entryId, navigate, myEntry]);
+  }, [queueId, entryId, navigate]);
 
   const getPositionInQueue = (
     entry: QueueEntry | null,
