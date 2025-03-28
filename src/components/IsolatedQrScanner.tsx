@@ -6,8 +6,7 @@ interface IsolatedQrScannerProps {
   onError?: (error: string) => void;
 }
 
-// This simple HTML page contains everything needed for QR scanning
-// Using it in an iframe completely isolates it from React's DOM handling
+// HTML template with responsive sizing
 const HTML_TEMPLATE = `
 <!DOCTYPE html>
 <html>
@@ -17,37 +16,237 @@ const HTML_TEMPLATE = `
   <title>QR Scanner</title>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
-    body { margin: 0; padding: 0; overflow: hidden; background: #f1f5f9; }
-    #qr-reader { width: 100%; }
-    #qr-reader-results { display: none; }
-    .html5-qrcode-element { margin-bottom: 8px !important; }
-    #qr-reader__dashboard_section_swaplink { display: none !important; } /* Hide camera swap link */
-    #qr-reader__dashboard_section_csr button { 
-      background: #2563eb !important; 
-      color: white !important; 
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html, body { 
+      margin: 0; 
+      padding: 0; 
+      overflow: hidden; 
+      background: #000; 
+      font-family: system-ui, -apple-system, sans-serif;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .scanner-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #qr-reader {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    /* Hide unnecessary elements */
+    #qr-reader__dashboard_section_swaplink { display: none !important; }
+    #qr-reader__status_span { display: none !important; }
+    
+    /* Style the video container and properly fill space */
+    #qr-reader__scan_region {
+      background: transparent !important;
+      position: absolute !important;
+      top: 0;
+      left: 0;
+      width: 100% !important;
+      height: 100% !important;
+      overflow: hidden;
+      padding: 0 !important;
+    }
+    
+    #qr-reader__scan_region video {
+      position: absolute;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      top: 0;
+      left: 0;
+    }
+    
+    /* Style the camera control buttons */
+    #qr-reader__dashboard {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      background: transparent !important;
+      display: flex;
+      justify-content: center;
+      z-index: 100;
+    }
+    
+    #qr-reader__dashboard_section_csr {
+      background: transparent !important;
+      text-align: center;
+    }
+    
+    #qr-reader__dashboard_section_csr button {
+      background: #2563eb !important;
+      color: white !important;
       border: none !important;
-      padding: 8px 12px !important;
-      border-radius: 6px !important;
+      padding: 8px 16px !important;
+      border-radius: 8px !important;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    /* Scanner frame */
+    .scan-frame {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 80%;
+      max-width: 300px;
+      max-height: 300px;
+      border: 2px solid rgba(255,255,255,0.5);
+      border-radius: 10px;
+      z-index: 10;
+      pointer-events: none;
+      box-shadow: 0 0 0 2000px rgba(0,0,0,0.5);
+    }
+    
+    /* Corner markers */
+    .corner {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-color: #2563eb;
+      border-width: 3px;
+      z-index: 15;
+    }
+    
+    .corner-tl {
+      top: -3px;
+      left: -3px;
+      border-top-style: solid;
+      border-left-style: solid;
+      border-top-left-radius: 8px;
+    }
+    
+    .corner-tr {
+      top: -3px;
+      right: -3px;
+      border-top-style: solid;
+      border-right-style: solid;
+      border-top-right-radius: 8px;
+    }
+    
+    .corner-bl {
+      bottom: -3px;
+      left: -3px;
+      border-bottom-style: solid;
+      border-left-style: solid;
+      border-bottom-left-radius: 8px;
+    }
+    
+    .corner-br {
+      bottom: -3px;
+      right: -3px;
+      border-bottom-style: solid;
+      border-right-style: solid;
+      border-bottom-right-radius: 8px;
+    }
+    
+    /* Scanner line animation */
+    .scan-line {
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background: #2563eb;
+      top: 50%;
+      animation: scan 2s linear infinite;
+      z-index: 15;
+    }
+    
+    @keyframes scan {
+      0% { top: 15%; }
+      50% { top: 85%; }
+      100% { top: 15%; }
+    }
+    
+    /* Instructions */
+    .instructions {
+      position: absolute;
+      bottom: 70px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 14px;
+      padding: 10px;
+      z-index: 20;
     }
   </style>
 </head>
 <body>
-  <div id="qr-reader"></div>
-  <div id="qr-reader-results"></div>
+  <div class="scanner-container">
+    <div id="qr-reader"></div>
+    
+    <div class="scan-frame">
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
+      <div class="scan-line"></div>
+    </div>
+    
+    <div class="instructions">Posisikan QR Code dalam kotak</div>
+  </div>
+  
   <script>
-    // Create QR scanner with minimal configuration
+    // Create QR scanner with dynamic configuration
     const html5QrCode = new Html5Qrcode("qr-reader");
-    const config = { fps: 5, qrbox: 250 };
+    
+    // Responsive qrbox based on screen dimensions
+    const computeQrboxSize = () => {
+      const scanBoxSize = Math.min(window.innerWidth, window.innerHeight) * 0.7;
+      return { 
+        width: scanBoxSize, 
+        height: scanBoxSize 
+      };
+    };
+    
+    const config = { 
+      fps: 10,
+      qrbox: computeQrboxSize(),
+      aspectRatio: window.innerWidth / window.innerHeight,
+      showTorchButtonIfSupported: true,
+      formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ]
+    };
+
+    // Add window resize handler to adjust qrbox size
+    window.addEventListener('resize', () => {
+      html5QrCode.applyVideoConstraints({
+        aspectRatio: window.innerWidth / window.innerHeight
+      }).catch(err => console.warn('Could not update aspect ratio', err));
+    });
 
     // Start scanning when page loads
     html5QrCode.start(
       { facingMode: "environment" }, 
       config,
       (decodedText) => {
-        // Send result to parent window through postMessage
+        // Add vibration feedback
+        if (navigator.vibrate) {
+          navigator.vibrate(100);
+        }
+        
+        // Send result to parent window
         window.parent.postMessage({ type: 'qr-result', code: decodedText }, '*');
         
-        // Immediately stop scanning
+        // Stop scanning
         html5QrCode.stop()
           .catch(error => console.error('Failed to stop scanner:', error));
       },
@@ -59,7 +258,6 @@ const HTML_TEMPLATE = `
         }
       }
     ).catch((err) => {
-      // Report initialization errors
       window.parent.postMessage({ 
         type: 'qr-error', 
         error: 'Failed to start scanner: ' + (err.message || String(err)) 
@@ -111,7 +309,6 @@ const IsolatedQrScanner: React.FC<IsolatedQrScannerProps> = ({
       setIsLoading(false);
     }, 3000);
 
-    // Clean up
     return () => {
       window.removeEventListener("message", handleMessage);
       URL.revokeObjectURL(url);
@@ -129,8 +326,8 @@ const IsolatedQrScanner: React.FC<IsolatedQrScannerProps> = ({
 
   return (
     <div
-      className="qr-scanner-isolated-container relative w-full"
-      style={{ height: "300px" }}
+      className="qr-scanner-isolated-container relative w-full bg-black overflow-hidden rounded-lg"
+      style={{ height: "100vh", maxHeight: "500px" }}
     >
       {iframeUrl && (
         <iframe
@@ -144,10 +341,12 @@ const IsolatedQrScanner: React.FC<IsolatedQrScannerProps> = ({
       )}
 
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 bg-opacity-75">
+        <div className="absolute inset-0 flex items-center justify-center bg-black">
           <div className="flex flex-col items-center">
-            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-            <span className="mt-2 text-gray-600">Loading scanner...</span>
+            <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
+            <span className="mt-4 text-white font-medium">
+              Aktivasi kamera...
+            </span>
           </div>
         </div>
       )}
