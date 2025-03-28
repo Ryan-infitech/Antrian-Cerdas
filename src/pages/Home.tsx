@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import rianseptiawan from "../components/rianseptiawan.jpg";
+import rianseptiawan from "../public/images/RianSeptiawan.jpg";
 import {
   Users,
   PlusCircle,
