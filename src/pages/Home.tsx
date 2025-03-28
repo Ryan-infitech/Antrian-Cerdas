@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import rianseptiawan from "../public/images/RianSeptiawan.jpg";
+import SEO from "../components/SEO";
 import {
   Users,
   PlusCircle,
@@ -22,6 +23,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 to-purple-900 flex items-center justify-center p-2 sm:p-4 relative overflow-hidden">
+      <SEO
+        title="Antrian Cerdas - Sistem Antrian Digital Modern"
+        description="Antrian Cerdas memudahkan proses pembuatan dan pengelolaan antrian secara digital. Cocok untuk klinik, bank, restoran dan layanan publik."
+        keywords="antrian digital, sistem antrian, manajemen antrian, aplikasi antrian, qr code antrian, antrian cerdas"
+      />
+
       {/* Pixel background elements */}
       <div className="pixel-grid absolute inset-0 opacity-20"></div>
       <div className="pixel-dots absolute inset-0 opacity-30"></div>
@@ -30,7 +37,9 @@ export default function Home() {
         {[...Array(8)].map((_, i) => (
           <div
             key={i}
-            className={`absolute pixel-float-${(i % 4) + 1} pixel-star opacity-60`}
+            className={`absolute pixel-float-${
+              (i % 4) + 1
+            } pixel-star opacity-60`}
             style={{
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
@@ -157,7 +166,7 @@ export default function Home() {
               <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="font-pixel">Cara Penggunaan</span>
             </button>
-            
+
             <button
               onClick={() => setShowInfoModal(true)}
               className="inline-flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-lg transition-all pixel-btn-alt text-xs sm:text-sm"
@@ -202,16 +211,22 @@ export default function Home() {
                     Membuat Antrian
                   </h3>
                   <ol className="list-decimal pl-5 space-y-1 text-gray-700">
-                    <li>Klik tombol <span className="font-semibold">"Mulai"</span></li>
+                    <li>
+                      Klik tombol <span className="font-semibold">"Mulai"</span>
+                    </li>
                     <li>Login atau daftar akun jika belum memiliki akun</li>
-                    <li>Buka email untuk konfirmasi pendaftaran, anda akan di arahkan kembali</li>
+                    <li>
+                      Buka email untuk konfirmasi pendaftaran, anda akan di
+                      arahkan kembali
+                    </li>
                     <li>Masukkan nama antrian yang ingin dibuat</li>
                     <li>
-                      Setelah antrian dibuat, Anda akan mendapatkan QR Code yang 
-                      dapat di scan oleh orang lain untuk masuk antrian ( ss atau cetak aja :)
+                      Setelah antrian dibuat, Anda akan mendapatkan QR Code yang
+                      dapat di scan oleh orang lain untuk masuk antrian ( ss
+                      atau cetak aja :)
                     </li>
                     <li>
-                      Kelola antrian dari Dashboard dengan memanggil, 
+                      Kelola antrian dari Dashboard dengan memanggil,
                       menyelesaikan, atau skip antrian
                     </li>
                   </ol>
@@ -224,21 +239,24 @@ export default function Home() {
                     Masuk Antrian
                   </h3>
                   <ol className="list-decimal pl-5 space-y-1 text-gray-700">
-                    <li>Mudahnya kamu bisa scan Qr code menggunakan <span className="font-semibold">Google Lens</span></li>
+                    <li>
+                      Mudahnya kamu bisa scan Qr code menggunakan{" "}
+                      <span className="font-semibold">Google Lens</span>
+                    </li>
                   </ol>
 
-                  <div className="my-3 font-bold text-gray-600 pl-5">
-                    Atau
-                  </div>
+                  <div className="my-3 font-bold text-gray-600 pl-5">Atau</div>
 
                   <ol className="list-decimal pl-5 space-y-1 text-gray-700">
                     <li>
-                      Dari sini klik tombol <span className="font-semibold">"Masuk Antrian"</span>
+                      Dari sini klik tombol{" "}
+                      <span className="font-semibold">"Masuk Antrian"</span>
                     </li>
                     <li>Scan QR Code yang disediakan oleh pengelola antrian</li>
                     <li>Masukkan nama Anda</li>
                     <li>
-                      Anda akan mendapatkan nomor antrian dan estimasi waktu tunggu
+                      Anda akan mendapatkan nomor antrian dan estimasi waktu
+                      tunggu
                     </li>
                     <li>Pantau status antrian Anda secara real-time</li>
                   </ol>
@@ -246,8 +264,8 @@ export default function Home() {
 
                 <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
                   <p className="text-blue-700 text-sm">
-                    <span className="font-semibold">Tip:</span> Biarkan halaman 
-                    antrian tetap terbuka untuk menerima notifikasi saat giliran 
+                    <span className="font-semibold">Tip:</span> Biarkan halaman
+                    antrian tetap terbuka untuk menerima notifikasi saat giliran
                     Anda hampir tiba.
                   </p>
                 </div>
@@ -286,102 +304,112 @@ export default function Home() {
               <div className="space-y-6 text-sm sm:text-base">
                 <div>
                   <p className="text-gray-700 mb-4">
-                    <span className="font-bold text-blue-600">Antrian Cerdas</span> adalah 
-                    aplikasi manajemen antrian modern yang memudahkan proses antrian 
-                    secara digital. Aplikasi ini membantu mengurangi waktu tunggu dan 
-                    meningkatkan efisiensi dalam berbagai konteks seperti klinik, bank, 
-                    restoran, atau layanan publik.
+                    <span className="font-bold text-blue-600">
+                      Antrian Cerdas
+                    </span>{" "}
+                    adalah aplikasi manajemen antrian modern yang memudahkan
+                    proses antrian secara digital. Aplikasi ini membantu
+                    mengurangi waktu tunggu dan meningkatkan efisiensi dalam
+                    berbagai konteks seperti klinik, bank, restoran, atau
+                    layanan publik.
                   </p>
-                  
+
                   <p className="text-gray-700">
-                    Dengan fitur notifikasi real-time dan antarmuka yang intuitif, 
-                    Antrian Cerdas membantu mengelola arus pengunjung dengan lebih baik.
+                    Dengan fitur notifikasi real-time dan antarmuka yang
+                    intuitif, Antrian Cerdas membantu mengelola arus pengunjung
+                    dengan lebih baik.
                   </p>
                 </div>
 
                 <div className="pt-4 border-t border-gray-200">
-              <h3 className="font-pixel text-lg text-purple-600 mb-3">
-                Dibuat Oleh
-              </h3>
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-5 rounded-lg">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-lg">
-                    <img 
-                      src= {rianseptiawan}
-                      alt="Rian Septiawan" 
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.onerror = null;
-                        target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='white'%3E%3Crect width='100' height='100' fill='url(%23gradient)'/%3E%3Cdefs%3E%3ClinearGradient id='gradient' gradientTransform='rotate(45)'%3E%3Cstop offset='0%25' stop-color='%234F46E5'/%3E%3Cstop offset='100%25' stop-color='%23A855F7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='40' text-anchor='middle' dominant-baseline='middle'%3ERS%3C/text%3E%3C/svg%3E";
-                      }}
-                    />
+                  <h3 className="font-pixel text-lg text-purple-600 mb-3">
+                    Dibuat Oleh
+                  </h3>
+                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-5 rounded-lg">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-lg">
+                        <img
+                          src={rianseptiawan}
+                          alt="Rian Septiawan"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.onerror = null;
+                            target.src =
+                              "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='white'%3E%3Crect width='100' height='100' fill='url(%23gradient)'/%3E%3Cdefs%3E%3ClinearGradient id='gradient' gradientTransform='rotate(45)'%3E%3Cstop offset='0%25' stop-color='%234F46E5'/%3E%3Cstop offset='100%25' stop-color='%23A855F7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='40' text-anchor='middle' dominant-baseline='middle'%3ERS%3C/text%3E%3C/svg%3E";
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-800 text-lg">
+                          Rian Septiawan
+                        </h3>
+                        <p className="text-xs text-gray-500">
+                          Full Stack Web Developer
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Updated social media icons to be responsive */}
+                    <div className="flex justify-center sm:justify-start gap-3">
+                      <a
+                        href="https://github.com/ryan-infitech"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                        aria-label="GitHub"
+                      >
+                        <Github className="h-5 w-5 text-gray-700" />
+                      </a>
+                      <a
+                        href="mailto:contact@ryan.septiawan0115@gmail.com"
+                        className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                        aria-label="Email"
+                      >
+                        <Mail className="h-5 w-5 text-gray-700" />
+                      </a>
+                      <a
+                        href="https://linkedin.com/in/rian-septiawan/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                        aria-label="LinkedIn"
+                      >
+                        <Linkedin className="h-5 w-5 text-gray-700" />
+                      </a>
+                      <a
+                        href="https://rianseptiawan.my.id"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                        aria-label="Website"
+                      >
+                        <Globe className="h-5 w-5 text-gray-700" />
+                      </a>
+                    </div>
+
+                    <div className="mt-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                      <p className="text-blue-700 text-sm">
+                        © {new Date().getFullYear()} Antrian Cerdas. All rights
+                        reserved.
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-800 text-lg">Rian Septiawan</h3>
-                    <p className="text-xs text-gray-500">Full Stack Web Developer</p>
-                  </div>
                 </div>
-                
-                {/* Updated social media icons to be responsive */}
-                <div className="flex justify-center sm:justify-start gap-3">
-                  <a 
-                    href="https://github.com/ryan-infitech" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-                    aria-label="GitHub"
-                  >
-                    <Github className="h-5 w-5 text-gray-700" />
-                  </a>
-                  <a 
-                    href="mailto:contact@ryan.septiawan0115@gmail.com"
-                    className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-                    aria-label="Email"
-                  >
-                    <Mail className="h-5 w-5 text-gray-700" />
-                  </a>
-                  <a 
-                    href="https://linkedin.com/in/rian-septiawan/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-                    aria-label="LinkedIn"
-                  >
-                    <Linkedin className="h-5 w-5 text-gray-700" />
-                  </a>
-                  <a 
-                    href="https://rianseptiawan.my.id"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-                    aria-label="Website"
-                  >
-                    <Globe className="h-5 w-5 text-gray-700" />
-                  </a>
-                </div>
-                
-                <div className="mt-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
-                  <p className="text-blue-700 text-sm">
-                    © {new Date().getFullYear()} Antrian Cerdas. All rights reserved.
-                  </p>
-                </div>
+              </div>
+
+              <div className="mt-6 text-center">
+                <button
+                  onClick={() => setShowInfoModal(false)}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-pixel text-sm"
+                >
+                  Tutup
+                </button>
               </div>
             </div>
           </div>
-
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => setShowInfoModal(false)}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-pixel text-sm"
-            >
-              Tutup
-            </button>
-          </div>
         </div>
-      </div>
+      )}
     </div>
-  )}
-</div>
   );
 }

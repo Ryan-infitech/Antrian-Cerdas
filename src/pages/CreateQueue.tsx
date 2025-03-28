@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ClipboardCheck, Loader2, Mail, Lock, UserPlus, LogIn } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
-import toast from 'react-hot-toast';
-import { supabase } from '../lib/supabase';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  ClipboardCheck,
+  Loader2,
+  Mail,
+  Lock,
+  UserPlus,
+  LogIn,
+} from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import toast from "react-hot-toast";
+import { supabase } from "../lib/supabase";
+import SEO from "../components/SEO";
 
-type AuthMode = 'login' | 'register' | 'verify';
+type AuthMode = "login" | "register" | "verify";
 
 export default function CreateQueue() {
-  const [authMode, setAuthMode] = useState<AuthMode>('login');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [queueName, setQueueName] = useState('');
+  const [authMode, setAuthMode] = useState<AuthMode>("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [queueName, setQueueName] = useState("");
   const [loading, setLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [queueId, setQueueId] = useState<string | null>(null);
@@ -20,7 +28,9 @@ export default function CreateQueue() {
   // Check authentication status on component mount
   React.useEffect(() => {
     const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         setIsAuthenticated(true);
       }
@@ -33,36 +43,45 @@ export default function CreateQueue() {
     setLoading(true);
 
     try {
-      if (authMode === 'register') {
-        const { data: { user }, error } = await supabase.auth.signUp({
+      if (authMode === "register") {
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/create`
-          }
+            emailRedirectTo: `${window.location.origin}/create`,
+          },
         });
 
         if (error) throw error;
         if (user) {
-          toast.success('Registrasi berhasil! Silakan verifikasi email Anda.');
-          setAuthMode('verify');
-          setPassword(''); // Clear password after registration
+          toast.success("Registrasi berhasil! Silakan verifikasi email Anda.");
+          setAuthMode("verify");
+          setPassword(""); // Clear password after registration
         }
       } else {
-        const { data: { user }, error } = await supabase.auth.signInWithPassword({
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.signInWithPassword({
           email,
-          password
+          password,
         });
 
         if (error) throw error;
         if (user) {
-          toast.success('Login successful!');
+          toast.success("Login successful!");
           setIsAuthenticated(true);
         }
       }
     } catch (error: any) {
-      console.error('Authentication error:', error);
-      toast.error(error.message || (authMode === 'register' ? 'Registration failed' : 'Login failed'));
+      console.error("Authentication error:", error);
+      toast.error(
+        error.message ||
+          (authMode === "register" ? "Registration failed" : "Login failed")
+      );
     } finally {
       setLoading(false);
     }
@@ -73,38 +92,41 @@ export default function CreateQueue() {
     setLoading(true);
 
     try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
       if (userError) throw userError;
-      if (!user) throw new Error('User not authenticated');
+      if (!user) throw new Error("User not authenticated");
 
       const { data, error: insertError } = await supabase
-        .from('queues')
+        .from("queues")
         .insert([
-          { 
+          {
             name: queueName,
             created_by: user.id,
             is_active: true,
-            current_number: 0
-          }
+            current_number: 0,
+          },
         ])
         .select()
         .single();
 
       if (insertError) {
-        console.error('Insert error:', insertError);
+        console.error("Insert error:", insertError);
         throw new Error(insertError.message);
       }
 
       if (!data?.id) {
-        throw new Error('Queue created but no ID returned');
+        throw new Error("Queue created but no ID returned");
       }
 
       setQueueId(data.id);
-      toast.success('Antrian berhasil dibuat!');
+      toast.success("Antrian berhasil dibuat!");
     } catch (error: any) {
-      console.error('Error creating queue:', error);
-      toast.error(error.message || 'Failed to create queue');
+      console.error("Error creating queue:", error);
+      toast.error(error.message || "Failed to create queue");
     } finally {
       setLoading(false);
     }
@@ -116,7 +138,7 @@ export default function CreateQueue() {
     }
   };
 
-  const joinUrl = queueId ? `${window.location.origin}/join/${queueId}` : '';
+  const joinUrl = queueId ? `${window.location.origin}/join/${queueId}` : "";
 
   const renderVerificationMessage = () => (
     <div className="space-y-6 text-center">
@@ -124,16 +146,17 @@ export default function CreateQueue() {
         <Mail className="w-12 h-12 text-blue-500 mx-auto mb-4" />
         <h2 className="text-xl font-semibold mb-2">Verifikasi Email Anda</h2>
         <p className="text-gray-600 mb-4">
-          Kami telah mengirim email verifikasi ke <strong>{email}</strong>. 
-          Silakan periksa inbox Anda dan klik link verifikasi untuk mengaktifkan akun Anda.
+          Kami telah mengirim email verifikasi ke <strong>{email}</strong>.
+          Silakan periksa inbox Anda dan klik link verifikasi untuk mengaktifkan
+          akun Anda.
         </p>
         <p className="text-sm text-gray-500 mb-4">
           Tidak menerima email? Periksa folder spam Anda atau hubungi support.
         </p>
       </div>
-      
+
       <button
-        onClick={() => setAuthMode('login')}
+        onClick={() => setAuthMode("login")}
         className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
       >
         <LogIn className="w-5 h-5" />
@@ -145,7 +168,10 @@ export default function CreateQueue() {
   const renderAuthForm = () => (
     <form onSubmit={handleAuth} className="space-y-6">
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           Email
         </label>
         <div className="relative">
@@ -163,7 +189,10 @@ export default function CreateQueue() {
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="password"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           Password
         </label>
         <div className="relative">
@@ -188,7 +217,7 @@ export default function CreateQueue() {
       >
         {loading ? (
           <Loader2 className="w-5 h-5 animate-spin" />
-        ) : authMode === 'register' ? (
+        ) : authMode === "register" ? (
           <>
             <UserPlus className="w-5 h-5" />
             Register
@@ -204,10 +233,14 @@ export default function CreateQueue() {
       <div className="text-center">
         <button
           type="button"
-          onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
+          onClick={() =>
+            setAuthMode(authMode === "login" ? "register" : "login")
+          }
           className="text-blue-600 hover:text-blue-700 text-sm"
         >
-          {authMode === 'login' ? "Don't have an account? Register" : 'Already have an account? Login'}
+          {authMode === "login"
+            ? "Don't have an account? Register"
+            : "Already have an account? Login"}
         </button>
       </div>
     </form>
@@ -216,7 +249,10 @@ export default function CreateQueue() {
   const renderQueueForm = () => (
     <form onSubmit={handleCreateQueue} className="space-y-6">
       <div>
-        <label htmlFor="queueName" className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          htmlFor="queueName"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
           Nama Antrian
         </label>
         <input
@@ -235,11 +271,7 @@ export default function CreateQueue() {
         disabled={loading}
         className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
-        {loading ? (
-          <Loader2 className="w-5 h-5 animate-spin" />
-        ) : (
-          'Submit'
-        )}
+        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit"}
       </button>
     </form>
   );
@@ -257,7 +289,7 @@ export default function CreateQueue() {
         <button
           onClick={() => {
             navigator.clipboard.writeText(joinUrl);
-            toast.success('Link copied to clipboard!');
+            toast.success("Link copied to clipboard!");
           }}
           className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors"
         >
@@ -277,18 +309,30 @@ export default function CreateQueue() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-4">
+      <SEO
+        title="Buat Antrian Baru | Antrian Cerdas"
+        description="Buat antrian baru dan kelola secara realtime. Dapatkan QR code untuk dibagikan kepada pelanggan anda."
+        keywords="buat antrian, create queue, qr code antrian, antrian digital"
+        url="https://buatantrian.web.id/create"
+      />
+
       <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
         <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">
-          {!isAuthenticated ? (
-            authMode === 'verify' ? 'Email Verification' :
-            authMode === 'login' ? 'Login' : 'Register'
-          ) : !queueId ? 'Buat Antrian' : 'Antrian Dibuat'}
+          {!isAuthenticated
+            ? authMode === "verify"
+              ? "Email Verification"
+              : authMode === "login"
+              ? "Login"
+              : "Register"
+            : !queueId
+            ? "Buat Antrian"
+            : "Antrian Dibuat"}
         </h1>
 
-        {!isAuthenticated && (
-          authMode === 'verify' ? renderVerificationMessage() :
-          renderAuthForm()
-        )}
+        {!isAuthenticated &&
+          (authMode === "verify"
+            ? renderVerificationMessage()
+            : renderAuthForm())}
         {isAuthenticated && !queueId && renderQueueForm()}
         {queueId && renderQueueCreated()}
       </div>

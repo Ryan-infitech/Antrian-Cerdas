@@ -14,6 +14,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { supabase } from "../lib/supabase";
+import SEO from "../components/SEO";
 
 interface QueueEntry {
   id: string;
@@ -255,6 +256,7 @@ export default function ViewQueue() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <SEO title="Loading Queue | Antrian Cerdas" noindex={true} />
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-blue-500 mx-auto animate-spin mb-4" />
           <p className="text-gray-600">Loading queue details...</p>
@@ -271,6 +273,13 @@ export default function ViewQueue() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title={`Antrian ${queueName} | Antrian Cerdas`}
+        description={`Pantau status antrian ${queueName} secara real-time. Lihat posisi Anda dalam antrian dan waktu tunggu yang diperkirakan.`}
+        keywords={`status antrian, antrian ${queueName}, antrian digital, waktu tunggu`}
+        url={`https://buatantrian.web.id/view/${queueId}`}
+      />
+
       {/* Header Navigation */}
       <div className="bg-white border-b shadow-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">

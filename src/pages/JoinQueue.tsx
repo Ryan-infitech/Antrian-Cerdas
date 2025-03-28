@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Loader2, QrCode, AlertTriangle, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
 import { supabase } from "../lib/supabase";
+import SEO from "../components/SEO";
 import FallbackCameraScanner from "../components/FallbackCameraScanner";
 import IsolatedQrScanner from "../components/IsolatedQrScanner";
 import ScannerErrorBoundary from "../components/ScannerErrorBoundary";
@@ -288,6 +289,13 @@ export default function JoinQueue() {
   if (showScanner) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-4">
+        <SEO
+          title="Scan QR Code Antrian | Antrian Cerdas"
+          description="Scan QR code untuk bergabung dalam antrian. Dapatkan nomor antrian dan pantau status secara real-time."
+          keywords="scan qr antrian, join queue, masuk antrian, antrian digital"
+          url="https://buatantrian.web.id/join"
+        />
+
         <div className="bg-white rounded-xl shadow-lg p-6 max-w-md w-full">
           <div className="text-center mb-4">
             <QrCode className="w-12 h-12 text-blue-600 mx-auto mb-3" />

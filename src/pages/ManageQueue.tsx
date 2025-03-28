@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { supabase } from "../lib/supabase";
 import { DeleteAlert } from "../components/DeleteAlert";
+import SEO from "../components/SEO";
 
 interface QueueEntry {
   id: string;
@@ -280,6 +281,15 @@ export default function ManageQueue() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEO
+        title={`Dashboard ${queueName || "Antrian"} | Antrian Cerdas`}
+        description="Kelola dan pantau antrian secara real-time. Panggil nomor berikutnya, tandai selesai, atau lewati pelanggan dalam antrian."
+        keywords="kelola antrian, dashboard antrian, manajemen antrian, sistem antrian"
+        url={`https://buatantrian.web.id/manage/${queueId}`}
+        type="website"
+        noindex={true} // Admin pages should typically be noindex
+      />
+
       {/* Header with navigation */}
       <div className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
