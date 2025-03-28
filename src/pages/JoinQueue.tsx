@@ -265,7 +265,10 @@ export default function JoinQueue() {
 
       case "granted":
         return (
-          <div className="w-full min-h-[300px]">
+          <div
+            className="w-full rounded-lg overflow-hidden shadow-inner bg-black"
+            style={{ minHeight: "60vh", maxHeight: "500px" }}
+          >
             <IsolatedQrScanner
               onScanSuccess={handleScanSuccess}
               onError={(error) => {
@@ -296,7 +299,7 @@ export default function JoinQueue() {
             </p>
           </div>
 
-          <div className="border rounded-lg overflow-hidden bg-gray-100 relative">
+          <div className="rounded-lg overflow-hidden bg-gray-100 relative">
             {renderScannerContent()}
           </div>
 
