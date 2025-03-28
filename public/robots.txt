@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /manage/
+Disallow: /api/
+Disallow: /auth/
+
+Sitemap: https://buatantrian.web.id/sitemap.xml
