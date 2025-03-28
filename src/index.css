@@ -162,6 +162,52 @@
     gap: 12px;
   }
 
+  .pixel-btn-alt {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pixel-btn-alt:before {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transition: all 0.5s ease;
+    transform: rotate(45deg);
+  }
+
+  .pixel-btn-alt:hover:before {
+    top: -50%;
+    left: -50%;
+  }
+
+  .pixel-btn-alt:hover {
+    transform: translateY(-2px);
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.2s ease-in-out;
+  }
+
   @keyframes pixel-bounce {
     0%,
     100% {
