@@ -103,7 +103,7 @@ export default function ViewQueue() {
 
           // Check if myEntry exists before accessing its properties
           if (myEntry && myEntry.status === "waiting") {
-            toast.info("New customer joined the queue");
+            toast.info("Ada entry baru di antrian");
           }
         }
       )
@@ -128,7 +128,7 @@ export default function ViewQueue() {
 
             if (oldStatus !== newStatus) {
               if (newStatus === "called") {
-                toast.success("It's your turn now!", {
+                toast.success("Anda di panggil", {
                   icon: "🔔",
                   duration: 5000,
                 });
@@ -209,7 +209,7 @@ export default function ViewQueue() {
   const copyShareLink = () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url);
-    toast.success("Link copied to clipboard");
+    toast.success("Link berhasil di salin");
   };
 
   const formatTime = (minutes: number) => {
@@ -259,7 +259,7 @@ export default function ViewQueue() {
         <SEO title="Loading Queue | Antrian Cerdas" noindex={true} />
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-blue-500 mx-auto animate-spin mb-4" />
-          <p className="text-gray-600">Loading queue details...</p>
+          <p className="text-gray-600">Loading detail Antrian...</p>
         </div>
       </div>
     );
@@ -383,7 +383,7 @@ export default function ViewQueue() {
 
                   {myEntry.status === "waiting" && (
                     <div className="bg-gray-50 px-4 py-3 rounded-lg">
-                      <div className="text-sm text-gray-500">Your position</div>
+                      <div className="text-sm text-gray-500">Posisi Anda</div>
                       <div className="flex items-center gap-1.5">
                         <span className="text-2xl font-bold text-gray-900">
                           {position}
@@ -404,7 +404,7 @@ export default function ViewQueue() {
                   {myEntry.status === "called" && (
                     <div className="bg-amber-50 border border-amber-200 px-4 py-3 rounded-lg animate-pulse">
                       <div className="font-medium text-amber-800">
-                        It's your turn!
+                        Giliran Anda sudah dipanggil!
                       </div>
                       <div className="text-xs text-amber-700 mt-1">
                         Please proceed to the service area
@@ -467,7 +467,7 @@ export default function ViewQueue() {
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                 <Users className="w-5 h-5 text-gray-600" />
-                Current Queue
+                Antrian Saat ini
               </h2>
               <div className="text-sm text-gray-500">
                 {entries.filter((e) => e.status === "called").length > 0 && (
@@ -484,7 +484,7 @@ export default function ViewQueue() {
             <div className="p-8 text-center text-gray-500">
               <div className="flex flex-col items-center gap-3">
                 <CheckCircle className="w-12 h-12 text-green-400" />
-                <p>No customers currently in queue</p>
+                <p>Belum ada antrian</p>
               </div>
             </div>
           ) : (
@@ -563,10 +563,9 @@ export default function ViewQueue() {
           transition={{ delay: 0.3 }}
           className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 text-sm text-blue-800"
         >
-          <p>
-            This page automatically updates when the queue changes. Keep it open
-            to monitor your status.
-          </p>
+            <p>
+            Halaman ini secara otomatis diperbarui ketika antrian berubah. Tetap buka halaman ini untuk memantau status Anda.
+            </p>
         </motion.div>
       </div>
     </div>

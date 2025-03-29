@@ -86,7 +86,7 @@ export default function ManageQueue() {
 
         setStats(stats);
       } catch (error) {
-        toast.error("Failed to load queue details");
+        toast.error("Gagal mengambil data antrian");
         navigate("/");
       }
     };
@@ -186,7 +186,7 @@ export default function ManageQueue() {
         )
       );
     } catch (error) {
-      toast.error("Failed to update status");
+      toast.error("Gagal memperbarui status antrian");
       console.error(error);
     }
   };
@@ -210,10 +210,10 @@ export default function ManageQueue() {
 
       if (queueError) throw queueError;
 
-      toast.success("Queue deleted successfully");
+      toast.success("Antrian berhasil dihapus");
       navigate("/");
     } catch (error) {
-      toast.error("Failed to delete queue");
+      toast.error("Gagal menghapus antrian");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -224,7 +224,7 @@ export default function ManageQueue() {
   const copyQueueLink = () => {
     const url = `${window.location.origin}/join/${queueId}`;
     navigator.clipboard.writeText(url);
-    toast.success("Queue link copied to clipboard");
+    toast.success("Link antrian berhasil disalin ke clipboard");
   };
 
   const getStatusColor = (status: string) => {
@@ -319,7 +319,7 @@ export default function ManageQueue() {
               <div>
                 <h1 className="text-3xl font-bold mb-1">{queueName}</h1>
                 <p className="opacity-90">
-                  Manage your queue and track customer progress
+                  Atur dan pantau antrian pelanggan Anda dengan mudah.
                 </p>
               </div>
               <div className="flex space-x-2 mt-4 md:mt-0">
@@ -328,7 +328,7 @@ export default function ManageQueue() {
                   className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
                 >
                   <Share2 className="w-4 h-4" />
-                  <span>Share Queue</span>
+                  <span>Share Antrian</span>
                 </button>
                 <button
                   onClick={() => setShowDeleteDialog(true)}
@@ -336,7 +336,7 @@ export default function ManageQueue() {
                   disabled={isLoading}
                 >
                   <Trash2 className="w-4 h-4" />
-                  <span>Delete Queue</span>
+                  <span>Hapus Antrian</span>
                 </button>
               </div>
             </div>
@@ -459,7 +459,7 @@ export default function ManageQueue() {
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
                 <Users className="w-5 h-5 text-gray-600" />
-                <span>Customer Queue</span>
+                <span>Daftar Antrian</span>
               </h2>
               <span className="text-sm font-medium bg-gray-200 text-gray-800 px-3 py-1 rounded-full">
                 {filteredEntries.length} shown
@@ -472,7 +472,7 @@ export default function ManageQueue() {
               <div className="flex flex-col items-center gap-4">
                 <Users className="w-16 h-16 text-gray-300" />
                 {entries.length === 0 ? (
-                  <p>No customers have joined the queue yet</p>
+                  <p>Belum ada yang masuk antrian</p>
                 ) : (
                   <p>No customers match the selected filter</p>
                 )}
@@ -546,7 +546,7 @@ export default function ManageQueue() {
                             className="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition-colors flex items-center gap-2"
                           >
                             <RefreshCcw className="w-4 h-4" />
-                            <span>Call</span>
+                            <span>Panggil</span>
                           </motion.button>
                         )}
                         {entry.status === "called" && (

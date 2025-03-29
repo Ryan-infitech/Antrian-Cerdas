@@ -37,7 +37,7 @@ export default function JoinQueue() {
         setQueueName(data.name);
       } catch (error) {
         console.error("Error fetching queue:", error);
-        toast.error("Queue not found");
+        toast.error("Antrian tidak ditemukan");
         navigate("/");
       }
     };
@@ -58,7 +58,7 @@ export default function JoinQueue() {
         console.error("mediaDevices API not supported");
         setScannerStatus("error");
         setScannerError(
-          "Your browser doesn't support camera access. Try using Chrome, Firefox, or Safari."
+          "browser anda tidak mendukung akses kamera. Silakan gunakan browser lain."
         );
         return;
       }
@@ -67,7 +67,7 @@ export default function JoinQueue() {
       navigator.mediaDevices
         .getUserMedia({ video: true })
         .then((stream) => {
-          console.log("Camera permission granted");
+          console.log("akses kamera diizinkan");
           setScannerStatus("granted");
 
           // Stop the stream - we just needed permission
@@ -79,7 +79,7 @@ export default function JoinQueue() {
           setScannerError(
             err.name === "NotAllowedError" ||
               err.name === "PermissionDeniedError"
-              ? "Camera access denied. Please allow camera access and try again."
+              ? "Akses kamera ditolak. Silakan izinkan akses kamera untuk menggunakan pemindai QR."
               : `Camera error: ${err.message || "Unable to access camera"}`
           );
         });
@@ -151,7 +151,7 @@ export default function JoinQueue() {
           .catch((err) => {
             console.error("Error requesting camera again:", err);
             toast.error(
-              "Could not access camera. Please check browser settings."
+              "Tidak dapat mengakses kamera. Silakan buka pengaturan browser untuk mengizinkan akses kamera."
             );
           });
       }
@@ -221,8 +221,7 @@ export default function JoinQueue() {
           <div className="text-center p-6">
             <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
             <p className="text-red-600 mb-4">
-              Camera access was denied. Please enable camera permissions to scan
-              QR codes.
+              Akses kamera ditolak. Silakan izinkan akses kamera untuk menggunakan pemindai QR.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-3">
               <button
@@ -294,7 +293,7 @@ export default function JoinQueue() {
               Scan QR Code
             </h1>
             <p className="text-gray-600 mb-3">
-              Position the QR code within the frame to join the queue
+              Posisikan QR code dalam bingkai untuk memindai
             </p>
           </div>
 
