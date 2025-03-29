@@ -167,14 +167,13 @@ export default function JoinQueue() {
     setLoading(true);
 
     try {
-      // Get the current number
-      const { data: queue } = await supabase
-        .from("queues")
-        .select("current_number")
-        .eq("id", queueId)
-        .single();
+      // Use the atomic function to get the next number
+      const { data: nextNumberData, error: nextNumberError } =
+        await supabase.rpc("get_next_queue_number", { queue_uuid: queueId });
 
-      const nextNumber = (queue?.current_number || 0) + 1;
+      if (nextNumberError) throw nextNumberError;
+
+      const nextNumber = nextNumberData;
 
       // Create queue entry
       const { data: entry, error: entryError } = await supabase
@@ -190,14 +189,6 @@ export default function JoinQueue() {
         .single();
 
       if (entryError) throw entryError;
-
-      // Update queue current number
-      const { error: updateError } = await supabase
-        .from("queues")
-        .update({ current_number: nextNumber })
-        .eq("id", queueId);
-
-      if (updateError) throw updateError;
 
       toast.success("Berhasil masuk dalam antrian!");
       navigate(`/view/${queueId}?entry=${entry.id}`);
